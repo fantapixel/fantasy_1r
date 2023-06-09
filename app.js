@@ -141,6 +141,6 @@ app.post('/authh', (req, res) => {
             }
             req.session.auth = true;
             res.redirect('/');
-        }
+        } 
     );
 })
