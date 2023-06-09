@@ -4,12 +4,13 @@ const path = require('path');
 const app = express(); 
 const session = require('express-session');
 
+require('dotenv').config();
 
 // Соединение с базой данных
 const connection = mysql.createConnection({
     host: process.env.HOST,
     database: process.env.DATABASE,
-    user: process.env.DBUSER,
+    user: process.env.DB_USER,
     password: process.env.PASSWORD
 });
 
