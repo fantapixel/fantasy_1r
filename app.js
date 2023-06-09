@@ -68,7 +68,15 @@ app.get('/', (req, res) => {
         });
     });
 })
+app.get('/items', (req, res) => {
+    connection.query("SELECT * FROM items", (err, data, fields) => {
+        if (err) {
+            console.log(err);
+        }
 
+        res.status(200).send(data);
+    });
+});
 app.get('/items/:id', (req, res) => {
     connection.query("SELECT * FROM items WHERE id=?", [req.params.id],
         (err, data, fields) => {
@@ -144,4 +152,4 @@ app.post('/authh', (req, res) => {
             res.redirect('/');
         } 
     );
-})
+});

@@ -2,22 +2,20 @@
 
 <%- include('particles/navigation.ejs') %>
 
-<% for (let i = 0; i < items.length; i++) { %>
-
-    <div class="section">
-        <a href="/items/<%= items[i].id %>">
-            <h2 class="section__title"><%= items[i].title %></h2>
-            <img class="section__image" src="img/<%= items[i].image %>">
-        </a>
-    
-
-    <form action="/delete" method="post">
-            <input class="form-button" type="submit" value='Удалить'>
-            <input type="hidden" value="<%= items[i].id %>" name="id">
-    </form>
-
-    </div>
-<% } %>
+<div id="content">
+    <% for (let i = 0; i < items.length; i++) { %>
+        <div class="section">
+            <a href="/items/<%= items[i].id %>">
+                <h2 class="section__title"><%= items[i].title %></h2>
+                <img class="section__image" src="img/<%= items[i].image %>">
+            </a>
+        <form action="/delete" method="post">
+                <input class="form-button" type="submit" value='Удалить'>
+                <input type="hidden" value="<%= items[i].id %>" name="id">
+        </form>
+        </div>
+    <% } %>
+</div>
 
 <div>
     <% if (page > 1) { %>
@@ -27,5 +25,5 @@
         <a href="?page=<%= page + 1 %>">Вперёд</a>
     <% } %>
 </div>
-
+<button id="fetch">click me, if u dont want do die</button>
 <%- include('particles/footer.ejs') %>
