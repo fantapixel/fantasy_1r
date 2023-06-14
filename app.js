@@ -5,7 +5,7 @@ const app = express();
 const session = require('express-session');
 
 require('dotenv').config();
-
+app.use(express.json());
 // Соединение с базой данных
 const connection = mysql.createConnection({
     host: process.env.HOST,
@@ -47,29 +47,24 @@ function isAuth(req, res, next) {
  */
 app.get('/', (req, res) => {
     const itemsPerPage = 4;
-    let page = parseInt(req.query.page);
-    if (!page) page = 1;
     connection.query("Select count(id) as count from items", (err, data, fields) => {
         const itemsCount = (data[0].count);
         const pagesCount = Math.ceil(itemsCount / itemsPerPage);
-        if(page > pagesCount) {
-            res.redirect('/?page=' + (pagesCount))
-        }
-        connection.query("SELECT * FROM items limit ? offset ?", [[itemsPerPage], [(page - 1) * itemsPerPage ]], (err, data, fields) => {
+        connection.query("SELECT * FROM items limit ? offset 0", [[itemsPerPage]], (err, data, fields) => {
             if (err) {
              
                 console.log(err);
             }
             res.render('home', {
                 'items': data,
-                'pages': pagesCount,
-                'page': parseInt(page)    
+                'pages': pagesCount,   
             });
         });
     });
 })
-app.get('/items', (req, res) => {
-    connection.query("SELECT * FROM items", (err, data, fields) => {
+app.post('/items', (req, res) => {
+    let offset = (req.body.offset);
+    connection.query("SELECT * FROM items limit 4 offset ?", [[offset]], (err, data, fields) => {
         if (err) {
             console.log(err);
         }
@@ -78,7 +73,7 @@ app.get('/items', (req, res) => {
     });
 });
 app.get('/items/:id', (req, res) => {
-    connection.query("SELECT * FROM items WHERE id=?", [req.params.id],
+    connection.query("SELECT * FROM items WHERE id=?", [[req.params.id]],
         (err, data, fields) => {
             if (err) {
                 console.log(err);
