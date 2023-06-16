@@ -87,7 +87,7 @@ app.post('/items', (req, res) => {
     });
 });
 
-app.get('/:id', (req, res) => {
+app.get('/home/:id', (req, res) => {
     if(req.params.id == 'all') {
         res.redirect('/');
     }
@@ -166,7 +166,6 @@ app.post('/delete', (req, res) => {
         }
     );
 })
-
 app.post('/update', (req, res) => {
     connection.query(
         "UPDATE items SET title=?, image=? WHERE id=?", [[req.body.title],[req.body.image],[req.body.id]], (err, data, fields) => {

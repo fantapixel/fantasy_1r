@@ -9,7 +9,10 @@ if (page == null) page = 1;
 let counter = page * 4;
 
 let totalPages = content.dataset.pages;
-
+if(counter >= totalPages * 4) {
+    console.log('all');
+    btn.style.display = 'none';
+}
 btn.addEventListener('click', () => {
     fetch('/items', {
         method: 'POST',
@@ -29,10 +32,7 @@ btn.addEventListener('click', () => {
             for (let i = 0; i < result.length; i++) {
                 renderItem(result[i]);
             }
-            if(counter >= totalPages * 4) {
-                console.log('all');
-                btn.style.display = 'none';
-            }
+
         }
     )
 })
@@ -55,10 +55,6 @@ function renderItem(item) {
     let h2 = document.createElement('h2');
     h2.classList.add('section__title');
     h2.innerText = item.title;
-
-    let h3 = document.createElement('h3');
-    h3.classList.add('section__category');
-    h3.innerText = (1);
 
     let form = document.createElement('form');
     form.action = 'delete';
