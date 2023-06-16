@@ -80,7 +80,7 @@ app.post('/items', (req, res) => {
         if (err) {
             console.log(err);
         }
-        connection.query("Select * from category limit 4 offset ?", [[offset]], (err, data, fields) => {
+        connection.query("Select * from category limit 4 offset ?", [[offset]], (err, cats, fields) => {
             if (err) console.log(err);
             res.status(200).send(data);
         })
