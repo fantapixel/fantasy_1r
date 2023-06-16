@@ -9,7 +9,12 @@
 .section__image {
     border-radius: 8px;
 }
-
+.section__category{
+    margin-top: 0;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.508);
+    border-radius: 10px;
+}
 .section__title {
     margin-top: 0;
     text-align: center;

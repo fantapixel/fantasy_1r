@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const path = require('path');
 const app = express(); 
 const session = require('express-session');
+const { count } = require('console');
 
 require('dotenv').config();
 app.use(express.json());
@@ -55,12 +56,23 @@ app.get('/', (req, res) => {
              
                 console.log(err);
             }
-            res.render('home', {
-                'items': data,
-                'pages': pagesCount,   
+            connection.query("SELECT * FROM category",
+            (err, thisa, fields) => {
+                if (err) {
+                    console.log(err);
+                }
+                connection.query("Select * from category", (err, count, fields) => {
+                res.render('home', {
+                    'items': data,
+                    'pages': pagesCount,  
+                    'thisa': thisa,
+                    'all': true,
+                    'dot': count,
+                });
             });
         });
     });
+});
 })
 app.post('/items', (req, res) => {
     let offset = (req.body.offset);
@@ -68,40 +80,81 @@ app.post('/items', (req, res) => {
         if (err) {
             console.log(err);
         }
-
-        res.status(200).send(data);
+        connection.query("Select * from category limit 4 offset ?", [[offset]], (err, data, fields) => {
+            if (err) console.log(err);
+            res.status(200).send(data);
+        })
     });
 });
+
+app.get('/:id', (req, res) => {
+    if(req.params.id == 'all') {
+        res.redirect('/');
+    }
+    const itemsPerPage = 4;
+    connection.query("Select count(id) as count from items", (err, data, fields) => {
+        const itemsCount = (data[0].count);
+        const pagesCount = Math.ceil(itemsCount / itemsPerPage);
+    connection.query("Select * from items where catID=? limit ? offset 0", [[req.params.id], [itemsPerPage]], (err, data, fields) => {
+        if (err) console.log(err);
+        console.log(data);
+    connection.query("Select * from category", (err, count, fields) => {
+        res.render('home', {
+            'items': data,
+            'pages': pagesCount,
+            'all': false,
+            'dot': count
+        });
+    });
+});
+});
+});
+
 app.get('/items/:id', (req, res) => {
     connection.query("SELECT * FROM items WHERE id=?", [[req.params.id]],
         (err, data, fields) => {
             if (err) {
                 console.log(err);
             }
-
+            console.log(data[0].catId);
+            connection.query("SELECT * FROM category WHERE id=?", [[data[0].catId]],
+            (err, thisa, fields) => {
+                if (err) {
+                    console.log(err);
+                }
+            console.log(thisa);
             res.render('item', {
                 'item': data[0],
+                'thisa': thisa[0],
             })
-        });
-})
+        })
+    });
+});
+
 
 app.get('/add', isAuth, (req, res) => {
-    res.render('add')
-})
+    connection.query("select * from category", (err, data, fields) => {
+        if (err) {
+            console.log(err);
+        }
+        res.render('add', {
+            'data': data
+        });
+    });
+});
 
 app.post('/store', (req, res) => {
     connection.query(
-        "INSERT INTO items (title, image) VALUES (?, ?)",
-        [[req.body.title], [req.body.image]],
+        "INSERT INTO items (title, image, catID) VALUES (?, ?, ?)",
+        [[req.body.title], [req.body.image], [req.body.catID]],
         (err, data, fields) => {
             if (err) {
                 console.log(err);
             }
-
             res.redirect('/');
         }
     );
-})
+});
 
 app.post('/delete', (req, res) => {
     connection.query(
@@ -124,7 +177,12 @@ app.post('/update', (req, res) => {
         }
     );
 })
+app.get('/catform', isAuth, (req, res) => {
 
+        res.render('catadd', {
+        });
+    })
+    
 app.get('/auth', (req,res) => {
     res.render('auth');
 
@@ -146,5 +204,17 @@ app.post('/authh', (req, res) => {
             req.session.auth = true;
             res.redirect('/');
         } 
+    );
+});
+app.post('/cat', (req, res) => {
+    connection.query(
+        "INSERT INTO category (name, descr) VALUES (?, ?)",
+        [[req.body.name], [req.body.descr]],
+        (err, data, fields) => {
+            if (err) {
+                console.log(err);
+            }
+            res.redirect('/');
+        }
     );
 });

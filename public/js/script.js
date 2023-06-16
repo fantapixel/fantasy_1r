@@ -56,6 +56,10 @@ function renderItem(item) {
     h2.classList.add('section__title');
     h2.innerText = item.title;
 
+    let h3 = document.createElement('h3');
+    h3.classList.add('section__category');
+    h3.innerText = (1);
+
     let form = document.createElement('form');
     form.action = 'delete';
     form.method = 'post';
