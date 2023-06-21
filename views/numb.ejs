@@ -1,0 +1,25 @@
+<%- include('particles/header.ejs') %>
+
+<%- include('particles/navigation.ejs') %>
+
+<form action="/catadd" method="post">
+    <h2>
+    Уже выбраны категории:
+    </h2>
+    <ul>
+        <% for(let i = 0; i < numb.length; i++) { %>
+        <li> <%=data[numb[i].cat_id - 1].name%> </li>
+        <%}%>
+    </ul>
+    <input type="hidden" value="<%=params%>" name="id">
+    <div class="form-group">
+        <select name="catID" id="catID" aria-placeholder="Категория">
+            <% for(let i = 0; i < data.length; i++) {%>
+            <option value="<%=data[i].id%>"><%=data[i].name%></option>
+            <%}%>
+        </select>
+    </div>
+    <input class="form-button" type="submit" value="Создать">
+</form>
+
+<%- include('particles/footer.ejs') %>

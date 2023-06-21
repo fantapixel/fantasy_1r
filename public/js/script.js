@@ -1,4 +1,4 @@
-let btn = document.getElementById('fetch');
+let button = document.getElementById('fetch');
 let content = document.getElementById('content');
 
 const queryString = window.location.search;
@@ -9,33 +9,37 @@ if (page == null) page = 1;
 let counter = page * 4;
 
 let totalPages = content.dataset.pages;
-if(counter >= totalPages * 4) {
-    console.log('all');
-    btn.style.display = 'none';
-}
-btn.addEventListener('click', () => {
-    fetch('/items', {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            offset: counter,
-        })
-    }).then(
-        (response) => {
-            return response.json();
-        }
-    ).then(
-        (result) => {
-            counter += 4;
-            for (let i = 0; i < result.length; i++) {
-                renderItem(result[i]);
+// console.log(urlParams.get('page'));
+if (button !== null){
+    button.addEventListener('click',() => {
+        fetch('/items', {
+            method: 'POST',
+            headers: {
+                'Content-Type': "application/json",
+            },
+            body: JSON.stringify({
+                offset: counter,
+            })
+        }).then(
+            (response) => {
+                return response.json();
             }
+        ).then(
+            (result) => {
+                console.log(result);
+            
+            counter += 4;    
+                for (let i = 0; i < result.length;i++) {
+                        renderItem(result[i]);
+                }
+                if (counter >= totalPages * 4) {
+                    button.style.display ='none';
+                }
+            }
+        );
 
-        }
-    )
-})
+    });
+};
 
 function renderItem(item) {
     let inp = document.createElement('input');

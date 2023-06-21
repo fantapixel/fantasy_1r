@@ -6,9 +6,13 @@
     <h2 class="section__title">
         <%= item.title %>
     </h2>
-    <h3 class="section__category">
-        <%= thisa.name%>
-    </h3>
+
+    <% for(let i = 0; i < thisa.length; i++){%>
+        <h3 class="section__category">
+        <%=thisa[i].name%>
+        </h3>
+    <%}%>
+   
     <img class="section__image" src="/img/<%= item.image %>">
 </div>
 
@@ -26,7 +30,7 @@
     </div>
     <input type="hidden" value="<%= item.id %>" name="id">
     <input class="form-button" type="submit" value="Обновить">
-   
 </form>
+    <a href="/catto/<%=params%>">Добавить категорию</a>
 
 <%- include('particles/footer.ejs') %>
