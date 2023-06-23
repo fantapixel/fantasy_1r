@@ -273,3 +273,17 @@ app.post('/cat', (req, res) => {
         }
     );
 });
+app.post('/dropcat', (req, res) => {
+    console.log(req.body.plc);
+    console.log('up');
+    connection.query(
+        "delete from itemstocat where cat_id=?", 
+        [[req.body.plc]],
+        (err, data, fields) => {
+            if (err) {
+                console.log(err);
+            }
+            res.redirect('/catto/' + req.body.id);
+        }
+    );
+});

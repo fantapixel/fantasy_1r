@@ -2,15 +2,23 @@
 
 <%- include('particles/navigation.ejs') %>
 
-<form action="/catadd" method="post">
+
     <h2>
     Уже выбраны категории:
     </h2>
     <ul>
         <% for(let i = 0; i < numb.length; i++) { %>
-        <li> <%=data[numb[i].cat_id - 1].name%> </li>
+        <li> <%=data[numb[i].cat_id - 1].name%>
+        <br>
+        <form action="/dropcat" method="post" id="delete">
+            <input type="hidden" value="<%=numb[i].cat_id%>" name="plc">
+            <input type="hidden" value="<%=params%>" name="id">
+            <input type="submit" id="btn-sub" value="Удалить">
+        </form>
+        </li>
         <%}%>
     </ul>
+    <form action="/catadd" method="post">
     <input type="hidden" value="<%=params%>" name="id">
     <div class="form-group">
         <select name="catID" id="catID" aria-placeholder="Категория">

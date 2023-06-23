@@ -8,14 +8,14 @@
     </h2>
 
     <% for(let i = 0; i < thisa.length; i++){%>
-        <style>
-            .section__category{
-                background-color: <%=thisa[i].color%>;
-            }
-        </style>
-        <h3 class="section__category">
-        <%=thisa[i].name%>
+        <h3 class="section__category" id="newid">
+            <%=thisa[i].name%>
         </h3>
+        <script>
+            let newid = document.getElementById('newid');
+            newid.style.backgroundColor = '<%=thisa[i].color%>';
+        </script>
+
 
     <%}%>
    
