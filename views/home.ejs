@@ -12,9 +12,6 @@
         <div class="section">
             <a href="/items/<%= items[i].id %>">
                 <h2 class="section__title"><%= items[i].title %></h2>
-                <% if(all) {%>
-                <h3 class="section__category"><%= thisa[items[i].catId - 1].name%></h3>
-                <%}%>
                 <img class="section__image" src="/img/<%= items[i].image %>">
             </a>
         <form action="/delete" method="post">

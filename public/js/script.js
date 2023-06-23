@@ -10,6 +10,9 @@ let counter = page * 4;
 
 let totalPages = content.dataset.pages;
 // console.log(urlParams.get('page'));
+if (counter >= totalPages * 4) {
+    button.style.display ='none';
+}
 if (button !== null){
     button.addEventListener('click',() => {
         fetch('/items', {
@@ -32,9 +35,7 @@ if (button !== null){
                 for (let i = 0; i < result.length;i++) {
                         renderItem(result[i]);
                 }
-                if (counter >= totalPages * 4) {
-                    button.style.display ='none';
-                }
+
             }
         );
 

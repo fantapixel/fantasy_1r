@@ -56,35 +56,26 @@ app.get('/', (req, res) => {
              
                 console.log(err);
             }
-            connection.query("SELECT * FROM category",
-            (err, thisa, fields) => {
-                if (err) {
-                    console.log(err);
-                }
-                connection.query("Select * from category", (err, count, fields) => {
+            connection.query("SELECT * from category", (err, dot, fields) => {
                 res.render('home', {
                     'items': data,
-                    'pages': pagesCount,  
-                    'thisa': thisa,
-                    'all': true,
-                    'dot': count,
+                    'pages': pagesCount,
+                    'dot': dot,
+                    
                 });
             });
         });
     });
 });
-})
 app.post('/items', (req, res) => {
     let offset = (req.body.offset);
     connection.query("SELECT * FROM items limit 4 offset ?", [[offset]], (err, data, fields) => {
         if (err) {
             console.log(err);
         }
-        connection.query("Select * from category limit 4 offset ?", [[offset]], (err, cats, fields) => {
-            if (err) console.log(err);
+        console.log(data);
             res.status(200).send(data);
-        })
-    });
+        });
 });
 
 app.get('/home/:id', (req, res) => {
@@ -95,16 +86,25 @@ app.get('/home/:id', (req, res) => {
     connection.query("Select count(id) as count from items", (err, data, fields) => {
         const itemsCount = (data[0].count);
         const pagesCount = Math.ceil(itemsCount / itemsPerPage);
-    connection.query("Select * from items where catID=? limit ? offset 0", [[req.params.id], [itemsPerPage]], (err, data, fields) => {
+    connection.query("Select item_id from itemstocat where cat_id = ?", [[req.params.id]], (err, want, fields) => {
+    if (err) console.log(err);
+    want = want.map(el => {
+        return el.item_id;
+    });
+
+    console.log(want);
+    
+    connection.query("Select * from items where id in ? limit ? offset 0", [[want], [itemsPerPage]], (err, data, fields) => {
         if (err) console.log(err);
         console.log(data);
-    connection.query("Select * from category", (err, count, fields) => {
+        connection.query("SELECT * from category", (err, dot, fields) => {
         res.render('home', {
             'items': data,
             'pages': pagesCount,
             'all': false,
-            'dot': count
+            'dot': dot,
         });
+    });
     });
 });
 });
@@ -127,7 +127,7 @@ app.get('/items/:id', (req, res) => {
             });
 
             console.log(item);
-
+            if(item.length != 0) {
             connection.query("SELECT * FROM category WHERE id in ?", [[item]],
             (err, thisa, fields) => {
                 if (err) {
@@ -140,8 +140,16 @@ app.get('/items/:id', (req, res) => {
                 'item': data[0],
                 'thisa': thisa,
                 'params': req.params.id,
+            });
             })
-        });
+            } else {
+                res.render('item', {
+                    'item': data[0],
+                    'thisa': [],
+                    'params': req.params.id,
+                });
+            }
+        
     });
     });
 });
@@ -149,7 +157,6 @@ app.get('/items/:id', (req, res) => {
 
 app.get('/add', isAuth, (req, res) => {
     res.render('add');
-    
 });
 
 app.post('/store', (req, res) => {
@@ -256,8 +263,8 @@ app.post('/authh', (req, res) => {
 });
 app.post('/cat', (req, res) => {
     connection.query(
-        "INSERT INTO category (name, descr) VALUES (?, ?)",
-        [[req.body.name], [req.body.descr]],
+        "INSERT INTO category (name, descr, color) VALUES (?, ?, ?)",
+        [[req.body.name], [req.body.descr], [req.body.clr]],
         (err, data, fields) => {
             if (err) {
                 console.log(err);
